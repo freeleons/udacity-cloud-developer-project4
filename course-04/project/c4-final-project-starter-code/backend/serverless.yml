@@ -1,4 +1,4 @@
-org: jw
+org: freeleons
 app: serverless-todo-app
 service: serverless-todo-app
 
@@ -134,7 +134,7 @@ functions:
       - Effect: Allow
         Action:
           - s3:PutObject
-        Resource: arn:aws:s3:ATTACHMENT_BUCKET
+        Resource: arn:aws:s3:ATTACHMENT_S3_BUCKET
 
 resources:
   Resources:
