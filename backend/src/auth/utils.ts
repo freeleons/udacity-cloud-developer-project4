@@ -2,6 +2,7 @@ import { decode } from 'jsonwebtoken'
 
 import { JwtPayload } from './JwtPayload'
 
+
 /**
  * Parse a JWT token and return a user id
  * @param jwtToken JWT token to parse

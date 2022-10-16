@@ -86,11 +86,22 @@ functions:
             schemas:
               application/json: ${file(models/create-todo-model.json)}
     iamRoleStatements:
-      - Effect: Allow
-        Action:
+       - Effect: Allow
+         Action:
+          - dynamodb:Scan
           - dynamodb:PutItem
-          - dynamodb:CreatItem
-        Resource: arn:aws:dynamodb:TODOS_TABLE
+          - dynamodb:DeleteItem
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+         Resource: arn:aws:dynamodb:TODOS_TABLE
+       - Effect: Allow
+         Action:
+          - s3:PutObject
+          - s3:GetObject
+         Resource: arn:aws:s3:::ATTACHMENT_S3_BUCKET
+
+
+
 
   # TODO: Configure this function
   # Provide property for setting up CORS, Authorizer, iamRoleStatements, and request schemas
@@ -162,7 +173,7 @@ resources:
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-        ResponseType: DEFAULT_2XX
+        ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
     
@@ -172,13 +183,17 @@ resources:
       Properties:
         TableName: ${self:provider.environment.TODOS_TABLE}
         AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
           - AttributeName: todoId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
         KeySchema:
-          - AttributeName: todoId
+          - AttributeName: userId
             KeyType: HASH
+          - AttributeName: todoId
+            KeyType: RANGE
         LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
             KeySchema:
@@ -225,4 +240,5 @@ resources:
               Principal: "*"
               Action:
                 - s3:GetObject
+                - s3:PutObject
               Resource: !Sub "arn:aws:s3:::${AttachmentsBucket}/*"
