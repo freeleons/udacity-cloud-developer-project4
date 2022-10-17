@@ -2,6 +2,11 @@ org: freeleons
 app: serverless-todo-app
 service: serverless-todo-app
 
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
@@ -57,7 +62,6 @@ functions:
           cors: true
           authorizer:
             name: Auth
-            arn: ${self:custom.auth0AuthorizerArn}
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
     iamRoleStatements:
@@ -79,7 +83,6 @@ functions:
           cors: true
           authorizer:
             name: Auth
-            arn: ${self:custom.auth0AuthorizerArn}
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
           request:
@@ -114,12 +117,11 @@ functions:
           cors: true
           authorizer:
             name: Auth
-            arn: ${self:custom.auth0AuthorizerArn}
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
           request:
               schemas:
-              application/json: ${file(models/update-todo-model.json)}
+                application/json: ${file(models/update-todo-model.json)}
     iamRoleStatements:
         - Effect: Allow
           Action:
@@ -137,12 +139,8 @@ functions:
           cors: true
           authorizer:
             name: Auth
-            arn: ${self:custom.auth0AuthorizerArn}
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
-          request:
-            schemas:
-            application/json: ${file(models/create-todo-model.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
