@@ -1,4 +1,4 @@
-import {TodosAccess} from "../helpers/todosAccess";
+import {TodosAccess} from "../data_access_layer/todosAccess";
 import {TodoItem} from "../models/TodoItem";
 import {CreateTodoRequest} from "../requests/CreateTodoRequest";
 import {TodoUpdate} from "../models/TodoUpdate";
