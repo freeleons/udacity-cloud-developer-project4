@@ -90,16 +90,11 @@ functions:
     iamRoleStatements:
        - Effect: Allow
          Action:
-          - dynamodb:Scan
           - dynamodb:PutItem
-          - dynamodb:DeleteItem
-          - dynamodb:UpdateItem
-          - dynamodb:Query
          Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}"
        - Effect: Allow
          Action:
           - s3:PutObject
-          - s3:GetObject
          Resource: "arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*"
 
 
@@ -230,7 +225,7 @@ resources:
         Bucket: !Ref AttachmentsBucket
         PolicyDocument:
           Id: MyPolicy
-          Version: 2012-10-17
+          Version: "2012-10-17"
           Statement:
             - Sid: PublicReadForGetBucketObjects
               Effect: Allow
