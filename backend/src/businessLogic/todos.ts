@@ -32,9 +32,9 @@ export async function deleteTodo(
 }
 
 export async function getGeneratedUploadURL(
-    todoId: string,
+    todoId: string, userId: string
 ): Promise<string> {
-    return await todoAccess.generateUploadUrl(todoId)
+    return await todoAccess.generateUploadUrl(todoId, userId)
 }
 
 export async function persistAttachmentUrl(

@@ -10,6 +10,7 @@ const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
 export class TodosAccess {
+
     constructor(
         private readonly docClient: DocumentClient = new DocumentClient(),
         private readonly todosTable = process.env.TODOS_TABLE,
@@ -90,17 +91,29 @@ export class TodosAccess {
         }).promise()
     }
 
-    async generateUploadUrl(todoId: string): Promise<string> {
+    async generateUploadUrl(todoId: string, userId: string): Promise<string> {
         logger.info('Generating an upload url')
         const s3 = new XAWS.S3({
             signatureVersion: 'v4'
         })
-        return s3.getSignedUrl('putObject', {
+        const uploadUrl = s3.getSignedUrl("putObject", {
             Bucket: this.bucketName,
             Key: todoId,
             Expires: this.urlExpiration
+        });
+        await this.docClient.update({
+            TableName: this.todosTable,
+            Key: { userId, todoId },
+            UpdateExpression: "set attachmentUrl=:URL",
+            ExpressionAttributeValues: {
+                ":URL": uploadUrl.split("?")[0]
+            },
+            ReturnValues: "UPDATED_NEW"
         })
+            .promise();
+        return uploadUrl;
     }
+
 
     async getTodosForUser(userId: string): Promise<TodoItem[]> {
         logger.info('Getting all todos for user')
@@ -115,4 +128,6 @@ export class TodosAccess {
         const items = result.Items
         return items as TodoItem[]
     }
+
+
 }
