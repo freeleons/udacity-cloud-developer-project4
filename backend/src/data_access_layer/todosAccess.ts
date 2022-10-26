@@ -15,7 +15,7 @@ export class TodosAccess {
         private readonly docClient: DocumentClient = new DocumentClient(),
         private readonly todosTable = process.env.TODOS_TABLE,
         private readonly userIdIndex = process.env.USER_ID_INDEX,
-        private readonly bucketName = process.env.IMAGES_S3_BUCKET,
+        private readonly bucketName = process.env.ATTACHMENT_S3_BUCKET,
         private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
     ) {}
 
@@ -99,7 +99,7 @@ export class TodosAccess {
         const uploadUrl = s3.getSignedUrl("putObject", {
             Bucket: this.bucketName,
             Key: todoId,
-            Expires: this.urlExpiration
+            Expires: parseInt(this.urlExpiration)
         });
         await this.docClient.update({
             TableName: this.todosTable,
