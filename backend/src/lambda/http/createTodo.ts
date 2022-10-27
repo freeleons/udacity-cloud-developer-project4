@@ -16,6 +16,15 @@ export const handler = middy(
         const createNewTodoRequest: CreateTodoRequest = JSON.parse(event.body)
         const todoId = uuid.v4()
         const userId = getUserId(event)
+        if (!createNewTodoRequest.name) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({
+                    error: 'Must supply a name for the new todo.'
+                })
+            }
+        }
+
         const newItem = await createTodo(createNewTodoRequest, userId, todoId)
         return {
             statusCode: 201,
